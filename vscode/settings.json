@@ -2,9 +2,14 @@
   "[python]": {
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.formatOnType": true,
-    "editor.wordBasedSuggestions": "off"
+    "editor.wordBasedSuggestions": "off",
+
+    "editor.fontFamily": "'JetBrains Mono', 'Fira Code', monospace",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 14,
+    "editor.letterSpacing": 0.5,
   },
-  "workbench.colorTheme": "Aura Dracula Spirit (Soft)",
+  "workbench.colorTheme": "Tokyo Night",
   //side bar
   "workbench.activityBar.location": "top",
   "editor.minimap.enabled": false,
@@ -129,4 +134,14 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }}
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.startupEditor": "none",
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
+
+
