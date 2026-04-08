@@ -41,15 +41,25 @@ export PATH
 export VIRTUAL_ENV_DISABLE_PROMPT=0
 
 # Ativação automática do Poetry se entrares numa pasta com pyproject.toml
-function activate_poetry_shell {
-  if [[ -f pyproject.toml && -z "$VIRTUAL_ENV" ]]; then
-    source $(poetry env info --path)/bin/activate 2>/dev/null
+function auto_poetry_shell {
+  if [[ -f pyproject.toml ]]; then
+    local venv_path=$(poetry env info --path 2>/dev/null)
+    if [[ -n "$venv_path" && "$VIRTUAL_ENV" != "$venv_path" ]]; then
+      source "$venv_path/bin/activate"
+    fi
+  elif [[ -n "$VIRTUAL_ENV" ]]; then
+    if [[ "$PWD" != "$(dirname "$VIRTUAL_ENV")"* ]]; then
+      deactivate 2>/dev/null
+    fi
   fi
 }
 autoload -U add-zsh-hook
-add-zsh-hook chpwd activate_poetry_shell
+add-zsh-hook chpwd auto_poetry_shell
 
-
+export OPENROUTER_API_KEY="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"
+export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
+export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
+export ANTHROPIC_API_KEY=""
 
 # install plugins
 # git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
