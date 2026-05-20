@@ -1,9 +1,18 @@
 export ZSH="$HOME/.oh-my-zsh"
 
+
+# 1. Bloqueia o prompt padrão dos scripts 'activate' para não sujar o Agnoster
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
 # Tema
 ZSH_THEME="agnoster"
 
-# Plugins (Adicionei os que te vão salvar tempo)
+# Forçar sempre o início na Home, exceto se aberto pelo VS Code
+if [[ -z "$VSCODE_CWD" && -z "$VSCODE_GIT_ASKPASS_NODE" ]]; then
+  cd "$HOME"
+fi
+
+# Plugins
 plugins=(
     git
     fzf
@@ -12,6 +21,7 @@ plugins=(
     terraform
     aws
     poetry
+    uv
     zsh-autosuggestions
     zsh-syntax-highlighting
 )
@@ -21,13 +31,19 @@ source $ZSH/oh-my-zsh.sh
 # --- ALIASES ---
 alias k="kubectl"
 alias t="terraform"
-alias awsp='export AWS_PROFILE=$(aws configure list-profiles | fzf)' # Escolher perfil AWS com FZF
-alias pa="source \$(poetry env info --path)/bin/activate"            # Ativar ambiente Poetry rápido
+alias awsp='export AWS_PROFILE=$(aws configure list-profiles | fzf)'
+alias pa='[[ -f uv.lock ]] && source .venv/bin/activate || source $(poetry env info --path)/bin/activate'
 alias zshconfig="nano ~/.zshrc"
 alias reload="source ~/.zshrc"
 
-# --- PATHS (Organizados e sem duplicados) ---
-typeset -U path # Impede que o PATH tenha entradas duplicadas
+# uv
+alias uvs="uv sync"
+alias uva="uv add"
+alias uvr="uv run"
+alias uvup="uv sync --upgrade"
+
+# --- PATHS ---
+typeset -U path
 path=(
     $HOME/.local/bin
     /usr/local/go/bin
@@ -36,31 +52,68 @@ path=(
 )
 export PATH
 
-# --- FIXES ---
-# Garante que o VirtualEnv do Python aparece no tema Agnoster
-export VIRTUAL_ENV_DISABLE_PROMPT=0
+# --- FIXES & AUTO VENV ---
 
-# Ativação automática do Poetry se entrares numa pasta com pyproject.toml
-function auto_poetry_shell {
-  if [[ -f pyproject.toml ]]; then
-    local venv_path=$(poetry env info --path 2>/dev/null)
-    if [[ -n "$venv_path" && "$VIRTUAL_ENV" != "$venv_path" ]]; then
-      source "$venv_path/bin/activate"
-    fi
-  elif [[ -n "$VIRTUAL_ENV" ]]; then
+# Função customizada para o Agnoster ler o nosso nome bonito
+# Colocamos isto aqui para sobrescrever a função original do tema
+
+
+function auto_venv_shell {
+  local current_dir_name=$(basename "$PWD")
+
+  # 1. Se estivermos num venv, verificar se saímos da pasta do projeto
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    # Se o caminho atual não começar pela pasta pai do venv, desativamos
     if [[ "$PWD" != "$(dirname "$VIRTUAL_ENV")"* ]]; then
-      deactivate 2>/dev/null
+      deactivate
+      unset VIRTUAL_ENV_DISPLAY
+    fi
+  fi
+
+  # 2. Tentar detetar novo ambiente se nenhum estiver ativo
+  if [[ -z "$VIRTUAL_ENV" ]]; then
+    # --- Lógica UV ---
+    if [[ -f uv.lock ]] || ([[ -f pyproject.toml ]] && [[ -d .venv ]] && [[ ! -f poetry.lock ]]); then
+      if [[ -d .venv ]]; then
+        source ".venv/bin/activate"
+        # Exportamos o PATH REAL para o VS Code ficar feliz
+        export VIRTUAL_ENV="$PWD/.venv"
+        # Exportamos o NOME ESTÉTICO para o nosso prompt_virtualenv acima
+        export VIRTUAL_ENV_DISPLAY="($current_dir_name-uv)"
+      fi
+
+    # --- Lógica POETRY ---
+    elif [[ -f poetry.lock ]]; then
+      local venv_path=$(poetry env info --path 2>/dev/null)
+      if [[ -n "$venv_path" ]]; then
+        source "$venv_path/bin/activate"
+        export VIRTUAL_ENV="$venv_path"
+        export VIRTUAL_ENV_DISPLAY="($(basename "$venv_path"))"
+      fi
     fi
   fi
 }
-autoload -U add-zsh-hook
-add-zsh-hook chpwd auto_poetry_shell
 
+autoload -U add-zsh-hook
+add-zsh-hook chpwd auto_venv_shell
+
+# --- API KEYS ---
+# NOTA: Recomendo trocar esta chave por segurança, pois foi exposta no histórico.
 export OPENROUTER_API_KEY="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"
 export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
 export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
 export ANTHROPIC_API_KEY=""
 
-# install plugins
+prompt_virtualenv() {
+  if [[ -n "$VIRTUAL_ENV_DISPLAY" ]]; then
+    prompt_segment blue white "$VIRTUAL_ENV_DISPLAY"
+  elif [[ -n "$VIRTUAL_ENV" ]]; then
+    prompt_segment blue white "$(basename "$VIRTUAL_ENV")"
+  fi
+}
+
+# --- NOTAS DE INSTALAÇÃO ---
 # git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 # git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+# para retirar nome master da branch
+# git -C ~ config oh-my-zsh.hide-status 1
