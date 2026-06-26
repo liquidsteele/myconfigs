@@ -4,79 +4,142 @@
   {
     "key": "ctrl+shift+a",
     "command": "workbench.action.terminal.focusNext",
-    "when": "terminalFocus"
+    "when": "terminalFocus",
   },
   {
     "key": "ctrl+shift+b",
     "command": "workbench.action.terminal.focusPrevious",
-    "when": "terminalFocus"
+    "when": "terminalFocus",
   },
   {
     "key": "ctrl+shift+j",
-    "command": "workbench.action.togglePanel"
+    "command": "workbench.action.togglePanel",
   },
   {
     "key": "ctrl+shift+n",
     "command": "workbench.action.terminal.new",
-    "when": "terminalFocus"
+    "when": "terminalFocus",
   },
   {
     "key": "ctrl+shift+w",
     "command": "workbench.action.terminal.kill",
-    "when": "terminalFocus"
+    "when": "terminalFocus",
   },
   // FILE TREE
   {
     "command": "workbench.action.toggleSidebarVisibility",
-    "key": "ctrl+e"
+    "key": "ctrl+e",
   },
   {
     "command": "workbench.files.action.focusFilesExplorer",
     "key": "ctrl+e",
-    "when": "editorTextFocus"
+    "when": "editorTextFocus",
   },
   {
     "key": "n",
     "command": "explorer.newFile",
-    "when": "filesExplorerFocus && !inputFocus"
+    "when": "filesExplorerFocus && !inputFocus",
   },
   {
     "command": "renameFile",
     "key": "r",
-    "when": "filesExplorerFocus && !inputFocus"
+    "when": "filesExplorerFocus && !inputFocus",
   },
   {
     "key": "shift+n",
     "command": "explorer.newFolder",
-    "when": "explorerViewletFocus"
-  },
-  {
-    "key": "shift+n",
-    "command": "workbench.action.newWindow",
-    "when": "!explorerViewletFocus"
+    "when": "explorerViewletFocus",
   },
   {
     "command": "deleteFile",
     "key": "d",
-    "when": "filesExplorerFocus && !inputFocus"
+    "when": "filesExplorerFocus && !inputFocus",
   },
 
   // EXTRA
   {
     "key": "ctrl+shift+5",
-    "command": "editor.emmet.action.matchTag"
+    "command": "editor.emmet.action.matchTag",
   },
   {
     "key": "ctrl+z",
-    "command": "workbench.action.toggleZenMode"
-  },//este eu ja tinha
+    "command": "workbench.action.toggleZenMode",
+  }, //este eu ja tinha
   {
-    "key": "ctrl+alt+p",
-    "command": "python.execInTerminal-icon"
+    "key": "ctrl+alt+r",
+    "command": "python.execInTerminal-icon",
   },
   {
-    "key": "shift+[BracketLeft]",
-    "command": "workbench.action.terminal.newInActiveWorkspace",
-    "when": "terminalProcessSupported"
+    "key": "shift+enter",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": {
+      "text": "\u001b\r",
+    },
+    "when": "terminalFocus",
+  },
+  {
+    "key": "ctrl+l",
+    "command": "continue.focusContinueInput",
+    "when": "neovim.mode == 'visual' || neovim.mode == 'visual-line' || neovim.mode == 'visual-block'",
+  },
+  {
+    "key": "ctrl+shift+t",
+    "command": "terminal.focus",
+    "when": "editorTextFocus || terminalFocus || outputViewFocus",
+  },
+  {
+    "key": "ctrl+shift+p",
+    "command": "-vscode-neovim.send",
+    "when": "editorTextFocus && neovim.mode != 'insert'",
+  },
+
+  {
+    "key": "escape",
+    "command": "editor.action.inlineSuggest.hide",
+    "when": "inlineSuggestionVisible && textInputFocus",
+  },
+  {
+    "key": "escape",
+    "command": "-vscode-neovim.escape",
+    "when": "inlineSuggestionVisible && textInputFocus",
+  },
+// ACEITAR SUGESTÃO INLINE COM O TAB (MESMO COM NEOVIM ATIVO)
+{
+    "key": "tab",
+    "command": "editor.action.inlineSuggest.commit",
+    "when": "inlineSuggestionVisible && textInputFocus && !editorHoverFocused"
+  },
+  {
+    "key": "tab",
+    "command": "editor.action.inlineEdit.accept",
+    "when": "inlineEditVisible && textInputFocus"
+  },
+  {
+    "key": "escape",
+    "command": "editor.action.inlineSuggest.hide",
+    "when": "inlineSuggestionVisible && textInputFocus"
+  },
+  {
+    "key": "escape",
+    "command": "editor.action.inlineEdit.reject",
+    "when": "inlineEditVisible && textInputFocus"
+  },
+  {
+    "key": "escape",
+    "command": "-vscode-neovim.escape",
+    "when": "inlineSuggestionVisible || inlineEditVisible"
+  },
+  // ACEITAR APENAS A PRÓXIMA PALAVRA COM CTRL+RIGHT
+  {
+    "key": "ctrl+right",
+    "command": "editor.action.inlineSuggest.acceptNextWord",
+    "when": "inlineSuggestionVisible && textInputFocus"
+  },
+// LIMPAR DESTAQUES DE PESQUISA (HIGHLIGHS) COM CTRL+L
+  {
+    "key": "ctrl+l",
+    "command": "vscode-neovim.send",
+    "args": "<C-l> :noh<CR>",
+    "when": "editorTextFocus && neovim.mode == 'normal'"
   }
 ]
