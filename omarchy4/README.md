@@ -129,8 +129,13 @@ portar para Lua:
 
 ## Omarchy
 
-`omarchy/shell.json` é a config da barra e do idle (screensaver a 150s, lock a
-300s, posição no topo). Hot-reload ao gravar; se não pegar, `omarchy restart shell`.
+`omarchy/shell.json` é a config da barra e do idle (screensaver a 900s = 15 min,
+lock a 1200s = 20 min, posição no topo). Hot-reload ao gravar; se não pegar,
+`omarchy restart shell`.
+
+Os dois valores de idle contam **desde o mesmo instante** (o início do idle), não
+são encadeados: o `lock` tem de ser sempre maior que o `screensaver`, senão o
+ecrã bloqueia antes de o screensaver chegar a aparecer.
 
 ### Temas
 
