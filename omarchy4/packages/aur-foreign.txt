@@ -1,0 +1,6 @@
+aws-cli-v2-bin
+brave-bin
+joplin-desktop
+mysqldump57-bin
+python-llm-openrouter
+vmware-govc-bin

@@ -119,7 +119,8 @@ add-zsh-hook chpwd auto_venv_shell
 
 # --- API KEYS ---
 # NOTA: Recomendo trocar esta chave por segurança, pois foi exposta no histórico.
-export OPENROUTER_API_KEY="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"
+# Chave removida do backup. Ver README (secção "Segredos").
+# export OPENROUTER_API_KEY="..."   -> vive em ~/.config/zsh/secrets.zsh (nao versionado)
 
 prompt_virtualenv() {
   if [[ -n "$VIRTUAL_ENV_DISPLAY" ]]; then

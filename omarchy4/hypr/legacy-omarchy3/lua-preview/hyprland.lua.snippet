@@ -1,0 +1,29 @@
+-- NÃO é um hyprland.lua completo — é só o teu pedaço pessoal.
+--
+-- No Omarchy 4.0 o ~/.config/hypr/hyprland.lua é o entrypoint fornecido pelo
+-- Omarchy (faz dofile do bootstrap, require("default.hypr.omarchy") e depois
+-- require dos teus monitors/input/bindings/looknfeel/autostart). Toda a lista
+-- de `source =` que tens hoje desaparece — é substituída por esse mecanismo.
+--
+-- Do teu hyprland.conf atual, a única coisa que é TUA é o bloco misc no fim.
+-- Cola isto no fundo do hyprland.lua novo, onde diz
+-- "Add any other personal Hyprland configuration below".
+
+-- Forçar o Hyprland a abrir SEMPRE as janelas no monitor e workspace ativos
+hl.config({
+  misc = {
+    initial_workspace_tracking = 1,
+  },
+})
+
+-- ATENÇÃO — discrepância que encontrei entre o teu comentário e o valor:
+--
+-- initial_workspace_tracking = 1 é o DEFAULT do Hyprland (1 = single-shot), ou
+-- seja este bloco não muda nada. E o efeito de 1 é o oposto do que o comentário
+-- descreve: a janela é enviada para o workspace onde a app foi lançada.
+--
+-- Se o que queres mesmo é "abrir sempre no workspace ativo", o valor é 0:
+--   initial_workspace_tracking = 0
+--
+-- Deixei o teu 1 para a conversão ser fiel ao .conf. Não testei o 0 no teu
+-- setup — troca e experimenta quando migrares.
