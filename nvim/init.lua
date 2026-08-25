@@ -1,10 +1,16 @@
--- bootstrap lazy.nvim apenas se NÃO estivermos no VS Code (opcional)
+-- Leader tem de estar definido ANTES de qualquer plugin/keymap ser carregado.
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
+-- Lidas pelo extra lazyvim.plugins.extras.lang.python no momento em que a spec
+-- é avaliada, por isso têm de vir antes do require("config.lazy").
+vim.g.lazyvim_python_lsp = "basedpyright"
+vim.g.lazyvim_python_ruff = "ruff"
+
+-- bootstrap lazy.nvim apenas se NÃO estivermos no VS Code
 if not vim.g.vscode then
     require("config.lazy")
 end
-
--- Definir o Leader como Space (essencial estar no topo)
-vim.g.mapleader = " "
 
 -- Bloco específico para VS Code
 if vim.g.vscode then
